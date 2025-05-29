@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Canvas transform live demo</title>
+    <style>
+        body { font-family: system-ui, sans-serif; margin: 2rem; }
+        .controls { display: grid; gap: .5rem; max-width: 500px; }
+        label { text-align: right; padding-right: .5rem; }
+        input[type=number] { width: 4rem; }
+        input[type=range] { width: 25rem; }
+        canvas { border: 1px solid #ccc; background: #f8f8f8; }
+    </style>
+</head>
+<body>
+
+<h2>Canvas transform live playground</h2>
+
+<canvas id="canvas" width="500" height="400"></canvas>
+
+<h3>Matrix parameters</h3>
+<div id="controls" class="controls"></div>
+
+<script>
+  /* ------------------------------------------------------------
+     1. Canvas setup
+  ------------------------------------------------------------- */
+  const canvas = document.getElementById("canvas");
+  const ctx     = canvas.getContext("2d");
+
+  /* ------------------------------------------------------------
+     2. Create six <input> rows programmatically
+        (Cleaner than hard-coding the HTML)
+  ------------------------------------------------------------- */
+  const defaults = [1, 0, 1, 1, 200, 150]; // a, b, c, d, e, f
+  const labels   = ["a", "b", "c", "d", "e", "f"];
+  const controls = document.getElementById("controls");
+  const text = document.createElement("div")
+  controls.after(text);
+
+  const inputs = labels.map((lbl, i) => {
+    const wrap  = document.createElement("div");
+    const lab   = document.createElement("label");
+    const range = document.createElement("input");
+    const num   = document.createElement("input");
+
+    lab.textContent     = lbl;
+    range.type          = "range";
+    range.min           = (i < 4 ? -3 : -1000);
+    range.max           = (i < 4 ?  3 :  1000);
+    range.step          = 0.01;
+    range.value         = defaults[i];
+
+    num.type            = "number";
+    num.step            = 0.01;
+    num.value           = defaults[i];
+
+    // keep number <-> slider in sync
+    range.oninput = () => { num.value = range.value; draw(); };
+    num.oninput   = () => { range.value = num.value; draw(); };
+
+    wrap.append(lab, range, num);
+    controls.appendChild(wrap);
+
+    return range;            // store easy reference
+  });
+
+  /* ------------------------------------------------------------
+     3. Draw function
+  ------------------------------------------------------------- */
+  function draw() {
+    // 3.1 clear canvas
+    ctx.setTransform(1,0,0,1,0,0);    // reset to identity
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // 3.2 read current slider values
+    const [a,b,c,d,e,f] = inputs.map(input => +input.value);
+
+    text.innerText = `ctx.transform(${a}, ${b}, ${c}, ${d}, ${e}, ${f});`
+
+    // 3.3 apply transform + draw square
+    ctx.transform(a, b, c, d, e, f);
+    ctx.fillStyle = "crimson";
+    ctx.fillRect(0, 0, 100, 100);
+  }
+
+  draw(); // initial paint
+</script>
+</body>
+</html>

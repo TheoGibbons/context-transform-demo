@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Canvas transform live demo</title>
+    <style>
+        body {
+            font-family: system-ui, sans-serif;
+            margin: 2rem;
+        }
+
+        .controls {
+            display: grid;
+            gap: .5rem;
+        }
+
+        label {
+            text-align: right;
+            padding-right: .5rem;
+            padding-left: .5rem;
+        }
+
+        input[type=number] {
+            width: 4rem;
+        }
+
+        input[type=range] {
+            width: 25rem;
+        }
+
+        canvas {
+            border: 1px solid #ccc;
+            background: #f8f8f8;
+        }
+
+        .dot {
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<h1>How To:</h1>
+<ol>
+    <li>Create an image with three dots and add it to the canvas (<code>lenna_dots.png</code> is already loaded as an example)</li>
+    <li>Manually update the "Image Dots" section below with the coords of the three dots in the above image (already done for <code>lenna_dots.png</code> as an example)</li>
+    <li>Click the "Randomise Dots" button. Then you can then move the dots if you want.</li>
+    <li>Transform Matrix will be populated with the necessary values to transform to image so your tie points match</li>
+</ol>
+
+<hr/>
+
+<h2>Canvas transform live playground</h2>
+<p>Demo of tying an image to three tie points using matrix transformations and the <code>context.transform(a, b, c, d, e, f)</code> function</p>
+
+<div style="display: flex;">
+    <div style="position: relative;">
+        <canvas id="canvas" width="800" height="500"></canvas>
+        <div style="display: none; background:red;width:5px;height:5px;position:absolute;" class="dot"></div>
+        <div style="display: none; background:#00ff00;width:5px;height:5px;position:absolute;" class="dot"></div>
+        <div style="display: none; background:blue;width:5px;height:5px;position:absolute;" class="dot"></div>
+    </div>
+    <div>
+        <div style="display: flex;align-items: flex-start;">
+            <div style="border: 2px #dedede solid;margin: 10px;padding: 0 10px 10px 10px;">
+                <h3>Transform Matrix</h3>
+                <div style="display: flex;flex-direction: column;gap: 20px;">
+                    <math>
+                        <semantics>
+                            <mrow>
+                                <mo>[</mo>
+                                <mtable columnalign="center" rowspacing="0.5ex">
+                                    <mtr>
+                                        <mtd>
+                                            <mi id="transform-matrix-a">a</mi>
+                                        </mtd>
+                                        <mtd>
+                                            <mi id="transform-matrix-c">c</mi>
+                                        </mtd>
+                                        <mtd>
+                                            <mi id="transform-matrix-e">e</mi>
+                                        </mtd>
+                                    </mtr>
+                                    <mtr>
+                                        <mtd>
+                                            <mi id="transform-matrix-b">b</mi>
+                                        </mtd>
+                                        <mtd>
+                                            <mi id="transform-matrix-d">d</mi>
+                                        </mtd>
+                                        <mtd>
+                                            <mi id="transform-matrix-f">f</mi>
+                                        </mtd>
+                                    </mtr>
+                                    <mtr>
+                                        <mtd>
+                                            <mn>0</mn>
+                                        </mtd>
+                                        <mtd>
+                                            <mn>0</mn>
+                                        </mtd>
+                                        <mtd>
+                                            <mn>1</mn>
+                                        </mtd>
+                                    </mtr>
+                                </mtable>
+                                <mo>]</mo>
+                            </mrow>
+                            <annotation encoding="TeX">\left[ \begin{array}{ccc} a &amp; c &amp; e \ b &amp; d &amp; f \
+                                0
+                                &amp; 0 &amp; 1 \end{array} \right]
+                            </annotation>
+                        </semantics>
+                    </math>
+
+                    <math style="color: #b8b8b8;">
+                        <semantics>
+                            <mrow>
+                                <mo>[</mo>
+                                <mtable columnalign="center" rowspacing="0.5ex">
+                                    <mtr>
+                                        <mtd>
+                                            <mi>a</mi>
+                                        </mtd>
+                                        <mtd>
+                                            <mi>c</mi>
+                                        </mtd>
+                                        <mtd>
+                                            <mi>e</mi>
+                                        </mtd>
+                                    </mtr>
+                                    <mtr>
+                                        <mtd>
+                                            <mi>b</mi>
+                                        </mtd>
+                                        <mtd>
+                                            <mi>d</mi>
+                                        </mtd>
+                                        <mtd>
+                                            <mi>f</mi>
+                                        </mtd>
+                                    </mtr>
+                                    <mtr>
+                                        <mtd>
+                                            <mn>0</mn>
+                                        </mtd>
+                                        <mtd>
+                                            <mn>0</mn>
+                                        </mtd>
+                                        <mtd>
+                                            <mn>1</mn>
+                                        </mtd>
+                                    </mtr>
+                                </mtable>
+                                <mo>]</mo>
+                            </mrow>
+                            <annotation encoding="TeX">\left[ \begin{array}{ccc} a &amp; c &amp; e \ b &amp; d &amp; f \
+                                0 &amp; 0 &amp; 1 \end{array} \right]
+                            </annotation>
+                        </semantics>
+                    </math>
+
+                </div>
+            </div>
+
+            <div style="margin: auto;">
+                &times;
+            </div>
+            <div style="border: 2px #dedede solid;margin: 10px;padding: 0 10px;">
+                <h3>Image Dots</h3>
+                <p>
+                    Red: <span id="m2-r-x">88</span>, <span id="m2-r-y">95</span><br/>
+                    Green: <span id="m2-g-x">326</span>, <span id="m2-g-y">59</span><br/>
+                    Blue: <span id="m2-b-x">210</span>, <span id="m2-b-y">216</span>
+                </p>
+            </div>
+
+            <div style="margin: auto;">
+                &equals;
+            </div>
+            <div style="border: 2px #dedede solid;margin: 10px;padding: 0 10px;">
+                <h3>Random Dots</h3>
+                <p>
+                    Red: <span id="random-dots-R-X"></span>, <span id="random-dots-R-Y"></span><br/>
+                    Green: <span id="random-dots-G-X"></span>, <span id="random-dots-G-Y"></span><br/>
+                    Blue: <span id="random-dots-B-X"></span>, <span id="random-dots-B-Y"></span>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+<button type="button" onclick="randomiseDots()">Randomise Dots</button>
+
+<h3>Matrix parameters</h3>
+<div id="controls" class="controls"></div>
+
+<script src="src/calc-transform-matrix.js"></script>
+<script>
+  /* ------------------------------------------------------------
+     1. Canvas setup
+  ------------------------------------------------------------- */
+  const canvas = document.getElementById("canvas");
+  const ctx = canvas.getContext("2d");
+
+  /* ------------------------------------------------------------
+     2. Create six <input> rows programmatically
+        (Cleaner than hard-coding the HTML)
+  ------------------------------------------------------------- */
+  const defaults = [1, 0, 0, 1, 100, 100]; // a, b, c, d, e, f
+  const labels = ["a (scale W)", "b (skew Y)", "c (skew X)", "d (scale H)", "e (translate X)", "f (translate Y)"];
+  const controls = document.getElementById("controls");
+  const text = document.createElement("div")
+  controls.after(text);
+
+  const img = new Image();
+  img.onload = () => {
+    draw()
+  };
+  img.src = 'assets/lenna_dots.png';
+
+  const inputs = labels.map((lbl, i) => {
+    const wrap = document.createElement("div");
+    const lab = document.createElement("label");
+    const range = document.createElement("input");
+    const num = document.createElement("input");
+
+    lab.textContent = lbl;
+    range.type = "range";
+    range.min = (i < 4 ? -3 : -1000);
+    range.max = (i < 4 ? 3 : 1000);
+    range.step = 0.01;
+    range.value = defaults[i];
+
+    num.type = "number";
+    num.step = 0.01;
+    num.value = defaults[i];
+
+    // keep number <-> slider in sync
+    range.oninput = () => {
+      num.value = range.value;
+      draw();
+    };
+    num.oninput = () => {
+      range.value = num.value;
+      draw();
+    };
+
+    wrap.append(range, num, lab);
+    controls.appendChild(wrap);
+
+    return range;            // store easy reference
+  });
+
+  /* ------------------------------------------------------------
+     3. Draw function
+  ------------------------------------------------------------- */
+  function draw() {
+    // 3.1 clear canvas
+    ctx.setTransform(1, 0, 0, 1, 0, 0);    // reset to identity
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // 3.2 read current slider values
+    const [a, b, c, d, e, f] = inputs.map(input => +input.value);
+
+    text.innerText = `ctx.transform(${a}, ${b}, ${c}, ${d}, ${e}, ${f});`
+
+    // Update matrix values in the DOM
+    document.getElementById("transform-matrix-a").textContent = a;
+    document.getElementById("transform-matrix-b").textContent = b;
+    document.getElementById("transform-matrix-c").textContent = c;
+    document.getElementById("transform-matrix-d").textContent = d;
+    document.getElementById("transform-matrix-e").textContent = e;
+    document.getElementById("transform-matrix-f").textContent = f;
+
+    // 3.3 apply transform + draw square
+    ctx.transform(a, b, c, d, e, f);
+    ctx.drawImage(img, 0, 0, img.width, img.height);
+
+  }
+
+  // draw(); // initial paint
+
+  // Randomise the left and top of the dots within the canvas bounds
+  function randomiseDots() {
+    const dots = document.querySelectorAll('.dot');
+    const colors = ['R', 'G', 'B']; // Corresponding to Red, Green, Blue
+
+    dots.forEach((dot, index) => {
+      const x = Math.random() * (canvas.width - 5);
+      const y = Math.random() * (canvas.height - 5);
+      dot.style.left = `${x}px`;
+      dot.style.top = `${y}px`;
+      dot.style.display = '';
+
+      // Update the corresponding random dot values in the DOM
+      document.getElementById(`random-dots-${colors[index]}-X`).textContent = x.toFixed(2);
+      document.getElementById(`random-dots-${colors[index]}-Y`).textContent = y.toFixed(2);
+    });
+
+    calculate()
+  }
+
+
+  let draggingDot = null;
+  let offsetX = 0;
+  let offsetY = 0;
+  const colors = ['R', 'G', 'B']; // Needed for lookup
+
+  // Track which dot is being dragged
+  document.querySelectorAll('.dot').forEach((dot, index) => {
+    dot.addEventListener('mousedown', (e) => {
+      draggingDot = dot;
+      const rect = dot.getBoundingClientRect();
+      offsetX = e.clientX - rect.left;
+      offsetY = e.clientY - rect.top;
+      draggingDot.dataset.index = index;
+    });
+  });
+
+  document.addEventListener('mousemove', (e) => {
+    if (draggingDot) {
+      const container = canvas.getBoundingClientRect();
+      let x = e.clientX - container.left - offsetX;
+      let y = e.clientY - container.top - offsetY;
+
+      // Clamp to canvas bounds
+      x = Math.max(0, Math.min(canvas.width - 5, x));
+      y = Math.max(0, Math.min(canvas.height - 5, y));
+
+      draggingDot.style.left = `${x}px`;
+      draggingDot.style.top = `${y}px`;
+
+      const idx = draggingDot.dataset.index;
+      document.getElementById(`random-dots-${colors[idx]}-X`).textContent = x.toFixed(2);
+      document.getElementById(`random-dots-${colors[idx]}-Y`).textContent = y.toFixed(2);
+
+      calculate();
+    }
+  });
+
+  document.addEventListener('mouseup', () => {
+    draggingDot = null;
+  });
+
+  function setSingleRangeInput(input, value) {
+    if(value > input.max) {
+      input.max = value;
+    }
+    if(value < input.min) {
+      input.min = value;
+    }
+    input.value = value;
+  }
+
+  function setRangeInputs(M1) {
+    setSingleRangeInput(inputs[0], M1[0][0])
+    setSingleRangeInput(inputs[0], M1[0][0])
+    setSingleRangeInput(inputs[1], M1[1][0])
+    setSingleRangeInput(inputs[2], M1[0][1])
+    setSingleRangeInput(inputs[3], M1[1][1])
+    setSingleRangeInput(inputs[4], M1[0][2])
+    setSingleRangeInput(inputs[5], M1[1][2])
+
+    // Trigger input event on all inputs
+    inputs.forEach(input => {
+      input.dispatchEvent(new Event('input'));
+    });
+  }
+
+  /**
+   * If any of the range pickers are maxed or mined
+   * Display a warning message
+   */
+  function calculate() {
+
+    const M2 = [
+      [document.getElementById(`m2-r-x`).innerText.trim(), document.getElementById(`m2-g-x`).innerText.trim(), document.getElementById(`m2-b-x`).innerText.trim()],
+      [document.getElementById(`m2-r-y`).innerText.trim(), document.getElementById(`m2-g-y`).innerText.trim(), document.getElementById(`m2-b-y`).innerText.trim()],
+      [1, 1, 1],
+    ]
+
+    const M3 = [
+      [document.getElementById(`random-dots-R-X`).innerText.trim(), document.getElementById(`random-dots-G-X`).innerText.trim(), document.getElementById(`random-dots-B-X`).innerText.trim()],
+      [document.getElementById(`random-dots-R-Y`).innerText.trim(), document.getElementById(`random-dots-G-Y`).innerText.trim(), document.getElementById(`random-dots-B-Y`).innerText.trim()],
+      [1, 1, 1],
+    ]
+
+    const M1 = calcTransformMatrix(M2, M3)
+
+    console.log(M1, M2, M3, inputs);
+
+    // Update the inputs with values of M1
+    setRangeInputs(M1)
+  }
+</script>
+</body>
+</html>
