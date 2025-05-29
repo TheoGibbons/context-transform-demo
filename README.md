@@ -13,4 +13,4 @@ An interactive **Canvas Transform Live Demo** showcasing matrix transformations 
 ## Demo
 
 1. Open the [index2.html](https://theogibbons.github.io/context-transform-demo/index2.html) file in your browser. The interface is user-friendly and provides instant feedback.
-2. There is also a simple demo [index2.html](https://theogibbons.github.io/context-transform-demo/index2.html) that showcases the different parameters in the context.transform() function.
+2. There is also a simple demo [index.html](https://theogibbons.github.io/context-transform-demo/index.html) that showcases the different parameters in the context.transform() function.
