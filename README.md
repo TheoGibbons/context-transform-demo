@@ -9,6 +9,7 @@ An interactive **Canvas Transform Live Demo** showcasing matrix transformations 
 - Dragable functionality for dots to dynamically update transformation calculations.
 - Randomize dots to test transformations with different configurations.
 - Visual representation of the transformation matrix and its effect on the canvas.
+- The actual calculation happens in this file: [calc-transform-matrix.js](src/calc-transform-matrix.js)
 
 ## Demo
 
