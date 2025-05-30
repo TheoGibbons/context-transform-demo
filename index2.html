@@ -42,16 +42,21 @@
 
 <h1>How To:</h1>
 <ol>
-    <li>Create an image with three dots and add it to the canvas (<code>lenna_dots.png</code> is already loaded as an example)</li>
-    <li>Manually update the "Image Dots" section below with the coords of the three dots in the above image (already done for <code>lenna_dots.png</code> as an example)</li>
-    <li>Click the "Randomise Dots" button. Then you can then move the dots if you want.</li>
+    <li>Create an image with three dots and add it to the canvas (<code>lenna_dots.png</code> is already loaded as an
+        example)
+    </li>
+    <li>Manually update the "Image Dots" section below with the coords of the three dots in the above image (already
+        done for <code>lenna_dots.png</code> as an example)
+    </li>
+    <li>Click the "Randomise Tie Points" button. Then you can then move the dots if you want.</li>
     <li>Transform Matrix will be populated with the necessary values to transform to image so your tie points match</li>
 </ol>
 
 <hr/>
 
 <h2>Canvas transform live playground</h2>
-<p>Demo of tying an image to three tie points using matrix transformations and the <code>context.transform(a, b, c, d, e, f)</code> function</p>
+<p>Demo of tying an image to three tie points using matrix transformations and the <code>context.transform(a, b, c, d,
+    e, f)</code> function</p>
 
 <div style="display: flex;">
     <div style="position: relative;">
@@ -179,17 +184,17 @@
                 &equals;
             </div>
             <div style="border: 2px #dedede solid;margin: 10px;padding: 0 10px;">
-                <h3>Random Dots</h3>
+                <h3>Tie Points</h3>
                 <p>
-                    Red: <span id="random-dots-R-X"></span>, <span id="random-dots-R-Y"></span><br/>
-                    Green: <span id="random-dots-G-X"></span>, <span id="random-dots-G-Y"></span><br/>
-                    Blue: <span id="random-dots-B-X"></span>, <span id="random-dots-B-Y"></span>
+                    Red: <span id="tie-point-R-X"></span>, <span id="tie-point-R-Y"></span><br/>
+                    Green: <span id="tie-point-G-X"></span>, <span id="tie-point-G-Y"></span><br/>
+                    Blue: <span id="tie-point-B-X"></span>, <span id="tie-point-B-Y"></span>
                 </p>
             </div>
         </div>
     </div>
 </div>
-<button type="button" onclick="randomiseDots()">Randomise Dots</button>
+<button type="button" onclick="randomiseTiePoints()">Randomise Tie Points</button>
 
 <h3>Matrix parameters</h3>
 <div id="controls" class="controls"></div>
@@ -281,7 +286,7 @@
   // draw(); // initial paint
 
   // Randomise the left and top of the dots within the canvas bounds
-  function randomiseDots() {
+  function randomiseTiePoints() {
     const dots = document.querySelectorAll('.dot');
     const colors = ['R', 'G', 'B']; // Corresponding to Red, Green, Blue
 
@@ -293,8 +298,8 @@
       dot.style.display = '';
 
       // Update the corresponding random dot values in the DOM
-      document.getElementById(`random-dots-${colors[index]}-X`).textContent = x.toFixed(2);
-      document.getElementById(`random-dots-${colors[index]}-Y`).textContent = y.toFixed(2);
+      document.getElementById(`tie-point-${colors[index]}-X`).textContent = x.toFixed(2);
+      document.getElementById(`tie-point-${colors[index]}-Y`).textContent = y.toFixed(2);
     });
 
     calculate()
@@ -331,8 +336,8 @@
       draggingDot.style.top = `${y}px`;
 
       const idx = draggingDot.dataset.index;
-      document.getElementById(`random-dots-${colors[idx]}-X`).textContent = x.toFixed(2);
-      document.getElementById(`random-dots-${colors[idx]}-Y`).textContent = y.toFixed(2);
+      document.getElementById(`tie-point-${colors[idx]}-X`).textContent = x.toFixed(2);
+      document.getElementById(`tie-point-${colors[idx]}-Y`).textContent = y.toFixed(2);
 
       calculate();
     }
@@ -343,10 +348,10 @@
   });
 
   function setSingleRangeInput(input, value) {
-    if(value > input.max) {
+    if (value > input.max) {
       input.max = value;
     }
-    if(value < input.min) {
+    if (value < input.min) {
       input.min = value;
     }
     input.value = value;
@@ -380,8 +385,8 @@
     ]
 
     const M3 = [
-      [document.getElementById(`random-dots-R-X`).innerText.trim(), document.getElementById(`random-dots-G-X`).innerText.trim(), document.getElementById(`random-dots-B-X`).innerText.trim()],
-      [document.getElementById(`random-dots-R-Y`).innerText.trim(), document.getElementById(`random-dots-G-Y`).innerText.trim(), document.getElementById(`random-dots-B-Y`).innerText.trim()],
+      [document.getElementById(`tie-point-R-X`).innerText.trim(), document.getElementById(`tie-point-G-X`).innerText.trim(), document.getElementById(`tie-point-B-X`).innerText.trim()],
+      [document.getElementById(`tie-point-R-Y`).innerText.trim(), document.getElementById(`tie-point-G-Y`).innerText.trim(), document.getElementById(`tie-point-B-Y`).innerText.trim()],
       [1, 1, 1],
     ]
 
