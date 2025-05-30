@@ -34,13 +34,18 @@ function matrixInverse3x3(M) {
 }
 
 function matrixMultiply(A, B) {
+
+  if (!A || !B || A.some(row => row.length !== B.length)) {
+    throw new Error("Incompatible matrix dimensions");
+  }
+
   const result = [];
 
-  for (let i = 0; i < 3; i++) {
+  for (let i = 0; i < A.length; i++) {
     result[i] = [];
-    for (let j = 0; j < 3; j++) {
+    for (let j = 0; j < B[0].length; j++) {
       result[i][j] = 0;
-      for (let k = 0; k < 3; k++) {
+      for (let k = 0; k < B.length; k++) {
         result[i][j] += A[i][k] * B[k][j];
       }
     }
